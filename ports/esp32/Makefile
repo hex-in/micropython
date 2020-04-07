@@ -360,6 +360,7 @@ SRC_C = \
 EXTMOD_SRC_C = $(addprefix extmod/,\
 	modonewire.c \
 	modbluetooth_nimble.c \
+        modm100.c \
 	)
 
 LIB_SRC_C = $(addprefix lib/,\
@@ -374,6 +375,7 @@ LIB_SRC_C = $(addprefix lib/,\
 DRIVERS_SRC_C = $(addprefix drivers/,\
 	bus/softspi.c \
 	dht/dht.c \
+        magicrf/m100.c\
 	)
 
 OBJ_MP =
