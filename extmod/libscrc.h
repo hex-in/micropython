@@ -3,7 +3,7 @@
  * Copyright (c) 2018-2020, Hexin Technology Co. Ltd All rights reserved.
  * Author  : Heyn (heyunhuan@gmail.com)
  * Version : V1.0
- * Web	   : http://www.hex-in.com
+ * Web	   : Fork : https://github.com/hex-in/libscrc.git
  *
  * LICENSING TERMS:
  * ---------------

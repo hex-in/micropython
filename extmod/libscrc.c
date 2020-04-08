@@ -3,7 +3,7 @@
  * Copyright (c) 2018-2020, Hexin Technology Co. Ltd All rights reserved.
  * Author  : Heyn (heyunhuan@gmail.com)
  * Version : V1.0
- * Web	   : http://www.hex-in.com
+ * Web	   : Fork : https://github.com/hex-in/libscrc.git
  *
  * LICENSING TERMS:
  * ---------------
@@ -143,5 +143,15 @@ const mp_obj_module_t mp_module_libscrc = {
 
 /****************************************************************************************************************/
 /*
+
+>>> import libscrc
+>>> libscrc.epc16(b'1234')
+44214
+>>> libscrc.epc16(b'123456789')
+54862
+>>> libscrc.epc16(b'123456')
+53515
+>>> libscrc.lrc(b'1234')
+54
 
 */
