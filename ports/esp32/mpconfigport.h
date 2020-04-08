@@ -190,6 +190,7 @@ extern const struct _mp_obj_module_t mp_module_machine;
 extern const struct _mp_obj_module_t mp_module_network;
 extern const struct _mp_obj_module_t mp_module_onewire;
 extern const struct _mp_obj_module_t mp_module_magicrf;
+extern const struct _mp_obj_module_t mp_module_libscrc;
 
 #define MICROPY_PORT_BUILTIN_MODULES \
     { MP_OBJ_NEW_QSTR(MP_QSTR_esp), (mp_obj_t)&esp_module }, \
@@ -201,6 +202,7 @@ extern const struct _mp_obj_module_t mp_module_magicrf;
     { MP_OBJ_NEW_QSTR(MP_QSTR_network), (mp_obj_t)&mp_module_network }, \
     { MP_OBJ_NEW_QSTR(MP_QSTR__onewire), (mp_obj_t)&mp_module_onewire }, \
     { MP_OBJ_NEW_QSTR(MP_QSTR_magicrf),  (mp_obj_t)&mp_module_magicrf }, \
+    { MP_OBJ_NEW_QSTR(MP_QSTR_libscrc),  (mp_obj_t)&mp_module_libscrc }, \
     { MP_OBJ_NEW_QSTR(MP_QSTR_uhashlib), (mp_obj_t)&mp_module_uhashlib }, \
 
 #define MP_STATE_PORT MP_STATE_VM
