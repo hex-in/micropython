@@ -23,6 +23,7 @@
 #include "py/mphal.h"
 #include "py/mperrno.h"
 #include "py/runtime.h"
+#include "py/mpthread.h"
 
 #include "driver/uart.h"
 #include "freertos/FreeRTOS.h"
@@ -44,6 +45,8 @@ static m100_obj_t m100_obj = { .handler     = mp_const_none,
 const mp_obj_type_t     m100_type;
 static uart_config_t    m100_uart_config;
 static mp_int_t         uart_port           = 1;
+
+STATIC mp_thread_mutex_t thread_mutex;
 
 STATIC mp_obj_t __hexin_uart_write( uint8_t *data, uint32_t size )
 {
@@ -74,11 +77,14 @@ static void hexin_threading_m100 ( void *pvParameters ) {
         }
         rxbufsize = (rxbufsize >= HEXIN_M100_BUFFER_MAX_SIZE ? HEXIN_M100_BUFFER_MAX_SIZE : rxbufsize);
         rxsize = uart_read_bytes( uart_port, rxbuffer, rxbufsize, 0 );
+
+        mp_thread_mutex_lock( &thread_mutex, 0 );
         packetHandler( &xRingBuffer,
                        m100_obj.trigger,
                        rxbuffer,
                        rxsize,
                        __callback_event );
+        mp_thread_mutex_unlock( &thread_mutex );
     }
 }
 
@@ -86,7 +92,15 @@ STATIC mp_obj_t m100_char_value(mp_obj_t self_in) {
     uint32_t    size = 0;
     uint8_t     data[HEXIN_RING_BUFFER_MAX_SIZE] = { 0x00 };
 
-    hexinRingBufferRead( &xRingBuffer, data, HEXIN_RING_BUFFER_MAX_SIZE, &size );
+    MP_THREAD_GIL_EXIT();
+    int ret = mp_thread_mutex_lock( &thread_mutex, 1 );
+    MP_THREAD_GIL_ENTER();
+
+    if ( ret == 1 ) {
+        hexinRingBufferRead( &xRingBuffer, data, HEXIN_RING_BUFFER_MAX_SIZE, &size );
+    }
+
+    mp_thread_mutex_unlock( &thread_mutex );
 
     if ( 0 == size ) {
         return mp_const_none;
@@ -271,6 +285,7 @@ STATIC mp_obj_t m100_make_new(const mp_obj_type_t *type, size_t n_args, size_t n
         self->init        = true;
         self->trigger     = HEXIN_MAGICRF_QUERY;
         hexinRingBufferInit( &xRingBuffer, self->value, HEXIN_RING_BUFFER_MAX_SIZE );
+        mp_thread_mutex_init( &thread_mutex );
         m100_init_uart_help( self, &args[0] );
     } else {
         mp_printf( &mp_plat_print, "M100 module already initialized.\r\n" );
